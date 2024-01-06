@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -22,6 +22,7 @@ export const ResetPasswordForm: React.FC = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
+  const [success, setSuccess] = useState(false)
 
   const {
     register,
@@ -65,23 +66,38 @@ export const ResetPasswordForm: React.FC = () => {
   }, [reset, token])
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-      <Message error={error} className={classes.message} />
-      <Input
-        name="password"
-        type="password"
-        label="New Password"
-        required
-        register={register}
-        error={errors.password}
-      />
-      <input type="hidden" {...register('token')} />
-      <Button
-        type="submit"
-        appearance="primary"
-        label="Reset Password"
-        className={classes.submit}
-      />
-    </form>
+    <Fragment>
+      {!success && (
+        <React.Fragment>
+          <p>Enter your registered email address. We'll send you a code to reset your password.</p>
+
+          <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+            <Message error={error} className={classes.message} />
+            <Input
+              name="password"
+              type="password"
+              label="New Password"
+              required
+              register={register}
+              error={errors.password}
+            />
+            <input type="hidden" {...register('token')} />
+            <Button
+              type="submit"
+              appearance="primary"
+              label="Reset Password"
+              className={classes.submit}
+            />
+          </form>
+        </React.Fragment>
+      )}
+      {success && (
+        <React.Fragment>
+          <h1>Request submitted</h1>
+          <p>Check your email for a link that will allow you to securely reset your password.</p>
+        </React.Fragment>
+      )}
+    </Fragment>
+    //
   )
 }
